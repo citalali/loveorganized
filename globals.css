@@ -732,13 +732,13 @@ select.form-control {
 }
 
 @font-face {
-  font-family: "FKGroteskNeue";
-  src: url("https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2")
-    format("woff2");
+  font-family: 'FKGroteskNeue';
+  src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2')
+    format('woff2');
 }
 
 /* END PERPLEXITY DESIGN SYSTEM */
-
+```css
 /* app/globals.css */
 @tailwind base;
 @tailwind components;
@@ -752,13 +752,12 @@ select.form-control {
 
 html {
   scroll-behavior: smooth;
-  font-size: var(--font-size-base);
   font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
   line-height: var(--line-height-normal);
   color: var(--color-text);
   background-color: var(--color-background);
   -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
 }
 
 body {
@@ -767,8 +766,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--color-background);
   color: var(--color-text);
-  margin: 0;
-  padding: 0;
 }
 
 /* Smooth transitions */
@@ -785,18 +782,17 @@ select:focus,
 textarea:focus {
   outline: none;
   box-shadow: var(--focus-ring);
-  border-color: var(--color-primary);
 }
 
 /* Remove default checkbox styling */
-input[type="checkbox"] {
+input[type='checkbox'] {
   cursor: pointer;
 }
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: var(--space-8);
+  height: var(--space-8);
 }
 
 ::-webkit-scrollbar-track {
@@ -812,22 +808,6 @@ input[type="checkbox"] {
   background: var(--color-text-secondary);
 }
 
-/* Animation for notifications */
-@keyframes slideInRight {
-  from {
-    transform: translateX(400px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-.animate-slide-in {
-  animation: slideInRight var(--duration-normal) var(--ease-standard);
-}
-
 /* Utility classes */
 .truncate-2 {
   display: -webkit-box;
@@ -837,19 +817,11 @@ input[type="checkbox"] {
 }
 
 .gradient-pink {
-  background: linear-gradient(
-    135deg,
-    var(--color-bg-7) 0%,
-    rgba(var(--color-red-400-rgb), 0.08) 100%
-  );
+  background: linear-gradient(135deg, var(--color-bg-7) 0%, rgba(var(--color-red-400-rgb, 255, 84, 89), 0.1) 100%);
 }
 
 .gradient-blue {
-  background: linear-gradient(
-    135deg,
-    var(--color-bg-1) 0%,
-    rgba(var(--color-teal-500-rgb), 0.08) 100%
-  );
+  background: linear-gradient(135deg, var(--color-bg-1) 0%, rgba(var(--color-teal-500-rgb, 33, 128, 141), 0.1) 100%);
 }
 
 .shadow-soft {
@@ -863,31 +835,16 @@ input[type="checkbox"] {
   }
 
   body {
-    font-size: var(--font-size-sm);
-  }
-
-  .animate-slide-in {
-    animation: slideInRight var(--duration-fast) var(--ease-standard);
+    padding: var(--space-8);
   }
 
   /* Adjust scrollbar for mobile */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: var(--space-4);
+    height: var(--space-4);
   }
 
-  /* Smaller gradients on mobile for better performance */
-  .gradient-pink,
-  .gradient-blue {
-    background-attachment: fixed;
-  }
-
-  /* Adjust utility classes for mobile */
-  .shadow-soft {
-    box-shadow: var(--shadow-sm);
-  }
-
-  /* Better touch targets for mobile */
+  /* Improve touch targets on mobile */
   button,
   input,
   select,
@@ -895,8 +852,27 @@ input[type="checkbox"] {
     min-height: 44px;
   }
 
-  input[type="checkbox"] {
-    min-width: 20px;
-    min-height: 20px;
+  /* Adjust utility classes for mobile */
+  .truncate-2 {
+    -webkit-line-clamp: 3;
+  }
+
+  /* Ensure focus styles are visible on mobile */
+  input:focus,
+  select:focus,
+  textarea:focus {
+    box-shadow: var(--focus-ring);
+    border-color: var(--color-primary);
+  }
+
+  /* Mobile-friendly gradients */
+  .gradient-pink,
+  .gradient-blue {
+    background-attachment: scroll;
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-md);
   }
 }
+```
