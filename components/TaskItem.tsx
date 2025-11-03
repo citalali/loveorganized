@@ -1,17 +1,17 @@
 // components/TaskItem.tsx
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { useState } from "react";
+import { supabase } from "../lib/supabase";
 
 type TaskItemProps = {
-  id: string
-  title: string
-  isCompleted: boolean
-  isShared?: boolean
-  assignedTo?: string
-  onUpdate: () => void
-}
+  id: string;
+  title: string;
+  isCompleted: boolean;
+  isShared?: boolean;
+  assignedTo?: string | null;
+  onUpdate: () => void;
+};
 
 export default function TaskItem({
   id,
@@ -21,20 +21,20 @@ export default function TaskItem({
   assignedTo,
   onUpdate,
 }: TaskItemProps) {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleComplete = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     const { error } = await supabase
-      .from('todos')
+      .from("todos")
       .update({ is_completed: !isCompleted })
-      .eq('id', id)
+      .eq("id", id);
 
     if (!error) {
-      onUpdate()
+      onUpdate();
     }
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   return (
     <div className="flex items-center gap-3 p-3 bg-white border border-gray-100 rounded-lg hover:border-pink-200 transition">
@@ -48,7 +48,7 @@ export default function TaskItem({
       <div className="flex-1">
         <p
           className={`text-sm font-medium ${
-            isCompleted ? 'line-through text-gray-400' : 'text-gray-700'
+            isCompleted ? "line-through text-gray-400" : "text-gray-700"
           }`}
         >
           {title}
@@ -67,5 +67,5 @@ export default function TaskItem({
         </div>
       </div>
     </div>
-  )
+  );
 }
