@@ -1,14 +1,10 @@
-// FILE: app/dashboard/date-ideas/page.tsx
-// LOCATION: UPDATE your existing date-ideas page
-// CHANGE: Add shared_with parameter
-
+// app/dashboard/date-ideas/page.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import { useNotificationStore } from '@/lib/stores'
-import PartnerBadge from '@/components/PartnerBadge'
 
 type DateIdea = {
   id: string
@@ -16,7 +12,6 @@ type DateIdea = {
   description: string | null
   category: string | null
   cost_level: string | null
-  shared_with?: string | null
 }
 
 export default function DateIdeasPage() {
@@ -25,12 +20,9 @@ export default function DateIdeasPage() {
   const [ideas, setIdeas] = useState<DateIdea[]>([])
   const [loading, setLoading] = useState(true)
   const [userId, setUserId] = useState<string | null>(null)
-  const [partnerId, setPartnerId] = useState<string | null>(null)
-  const [partnerEmail, setPartnerEmail] = useState<string | null>(null)
   const [newTitle, setNewTitle] = useState('')
   const [newCategory, setNewCategory] = useState('outdoor')
   const [newCost, setNewCost] = useState('low')
-  const [isShared, setIsShared] = useState(false)
   const [filter, setFilter] = useState<string>('all')
 
   useEffect(() => {
@@ -44,29 +36,10 @@ export default function DateIdeasPage() {
       const uid = sessionData.session.user.id
       setUserId(uid)
 
-      // CHANGED: Get partner info
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('partner_id')
-        .eq('id', uid)
-        .single()
-
-      if (profileData?.partner_id) {
-        setPartnerId(profileData.partner_id)
-        // Get partner's email
-        const { data: partnerProfile } = await supabase
-          .from('profiles')
-          .select('email')
-          .eq('id', profileData.partner_id)
-          .single()
-        setPartnerEmail(partnerProfile?.email || null)
-      }
-
-      // CHANGED: Add shared_with to query
       const { data, error } = await supabase
         .from('date_ideas')
         .select('*')
-        .or(`user_id.eq.${uid},shared_with.eq.${uid}`)
+        .eq('user_id', uid)
         .order('created_at', { ascending: false })
 
       if (!error) {
@@ -93,25 +66,23 @@ export default function DateIdeasPage() {
     e.preventDefault()
     if (!newTitle.trim() || !userId) return
 
-    // CHANGED: Add shared_with
     const { error } = await supabase.from('date_ideas').insert({
       user_id: userId,
       title: newTitle,
       category: newCategory,
       cost_level: newCost,
-      shared_with: isShared && partnerId ? partnerId : null,
     })
 
     if (!error) {
       setNewTitle('')
-      setIsShared(false)
       showNotification('Date idea added!', 'success')
     } else {
       showNotification('Failed to add date idea', 'error')
     }
   }
 
-  const filteredIdeas = filter === 'all' ? ideas : ideas.filter((idea) => idea.category === filter)
+  const filteredIdeas =
+    filter === 'all' ? ideas : ideas.filter((idea) => idea.category === filter)
 
   if (loading) return <div className="text-center py-12">Loading...</div>
 
@@ -119,6 +90,7 @@ export default function DateIdeasPage() {
     <div>
       <h1 className="text-3xl font-bold text-gray-900 mb-8">Date Ideas</h1>
 
+      {/* Add New Idea */}
       <form onSubmit={handleAddIdea} className="bg-white p-6 rounded-lg border border-gray-100 mb-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
           <input
@@ -149,28 +121,15 @@ export default function DateIdeasPage() {
             <option value="high">High</option>
           </select>
         </div>
-        {/* CHANGED: Add shared checkbox */}
-        <div className="flex gap-4">
-          <button
-            type="submit"
-            className="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 font-medium"
-          >
-            Add Idea
-          </button>
-          {partnerId && (
-            <label className="flex items-center gap-2 text-sm text-gray-600">
-              <input
-                type="checkbox"
-                checked={isShared}
-                onChange={(e) => setIsShared(e.target.checked)}
-                className="w-4 h-4 text-pink-600 rounded"
-              />
-              Share with partner
-            </label>
-          )}
-        </div>
+        <button
+          type="submit"
+          className="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 font-medium"
+        >
+          Add Idea
+        </button>
       </form>
 
+      {/* Filters */}
       <div className="flex gap-2 mb-6 flex-wrap">
         {['all', 'outdoor', 'indoor', 'food', 'entertainment'].map((f) => (
           <button
@@ -187,6 +146,7 @@ export default function DateIdeasPage() {
         ))}
       </div>
 
+      {/* Ideas Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredIdeas.length > 0 ? (
           filteredIdeas.map((idea) => (
@@ -196,7 +156,7 @@ export default function DateIdeasPage() {
             >
               <h3 className="font-semibold text-gray-900">{idea.title}</h3>
               {idea.description && <p className="text-sm text-gray-600 mt-2">{idea.description}</p>}
-              <div className="flex gap-2 mt-4 flex-wrap">
+              <div className="flex gap-2 mt-4">
                 {idea.category && (
                   <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
                     {idea.category}
@@ -207,13 +167,13 @@ export default function DateIdeasPage() {
                     {idea.cost_level}
                   </span>
                 )}
-                {/* CHANGED: Add partner badge */}
-                <PartnerBadge isShared={!!idea.shared_with} partnerEmail={partnerEmail} />
               </div>
             </div>
           ))
         ) : (
-          <p className="text-center py-12 text-gray-500 col-span-full">No ideas yet.</p>
+          <p className="text-center py-12 text-gray-500 col-span-full">
+            No date ideas yet. Add one to get started!
+          </p>
         )}
       </div>
     </div>

@@ -1,7 +1,4 @@
-// FILE: components/Navbar.tsx
-// LOCATION: UPDATE your existing components/Navbar.tsx
-// CHANGE: Add Settings link
-
+// components/Navbar.tsx
 'use client'
 
 import Link from 'next/link'
@@ -24,6 +21,7 @@ export default function Navbar() {
             💕 Couples
           </Link>
 
+          {/* Desktop Menu */}
           <div className="hidden md:flex gap-6 items-center">
             <Link href="/dashboard" className="text-sm text-gray-600 hover:text-pink-600">
               Dashboard
@@ -37,13 +35,6 @@ export default function Navbar() {
             <Link href="/dashboard/events" className="text-sm text-gray-600 hover:text-pink-600">
               Events
             </Link>
-            {/* CHANGED: Added Settings link */}
-            <Link
-              href="/dashboard/settings"
-              className="text-sm text-gray-600 hover:text-pink-600"
-            >
-              ⚙️ Settings
-            </Link>
             <button
               onClick={handleLogout}
               className="text-sm px-4 py-2 bg-pink-100 text-pink-700 rounded hover:bg-pink-200"
@@ -52,14 +43,22 @@ export default function Navbar() {
             </button>
           </div>
 
-          <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden"
+            onClick={() => setIsOpen(!isOpen)}
+          >
             ☰
           </button>
         </div>
 
+        {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden pb-4 space-y-2">
-            <Link href="/dashboard" className="block text-sm text-gray-600 hover:text-pink-600 py-2">
+            <Link
+              href="/dashboard"
+              className="block text-sm text-gray-600 hover:text-pink-600 py-2"
+            >
               Dashboard
             </Link>
             <Link
@@ -68,18 +67,17 @@ export default function Navbar() {
             >
               Date Ideas
             </Link>
-            <Link href="/dashboard/todos" className="block text-sm text-gray-600 hover:text-pink-600 py-2">
-              To-Dos
-            </Link>
-            <Link href="/dashboard/events" className="block text-sm text-gray-600 hover:text-pink-600 py-2">
-              Events
-            </Link>
-            {/* CHANGED: Added Settings link */}
             <Link
-              href="/dashboard/settings"
+              href="/dashboard/todos"
               className="block text-sm text-gray-600 hover:text-pink-600 py-2"
             >
-              ⚙️ Settings
+              To-Dos
+            </Link>
+            <Link
+              href="/dashboard/events"
+              className="block text-sm text-gray-600 hover:text-pink-600 py-2"
+            >
+              Events
             </Link>
             <button
               onClick={handleLogout}

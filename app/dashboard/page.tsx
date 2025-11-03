@@ -62,10 +62,12 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      <h1 className="text-3xl font-bold text-gray-900 mb-2 text-center">
         Super Mario Bros
       </h1>
-      <p className="text-gray-600 mb-8">Love in Chaos - Life in Order</p>
+      <p className="text-gray-600 mb-8 text-center">
+        Love in Chaos - Life in Order
+      </p>
 
       <div className="grid grid-cols-1 rounded md:grid-cols-2 lg:grid-cols-3 gap-6">
         <DatabaseCard
